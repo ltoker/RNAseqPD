@@ -92,7 +92,6 @@ rm(datas, cpmCountFiltered, cpmCountFiltered, ensembl, estimates, ExpDataAll, Ex
 
 
 ########Get adjusted log2 counts for genes #####################
-#Data from Dimitriu et al
 AdjCovarPV <- data.frame(Cov = c("sex_M_vs_F", 
                                  "Batch_2_vs_1", "Batch_3_vs_1", "Batch_4_vs_1",
                                  "age_years","PMI_hours", "rin",

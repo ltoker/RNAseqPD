@@ -1,5 +1,4 @@
 source("SetUp.R")
-packageF("biomaRt")
 packageF("tidyr")
 packageF("parallel")
 name = "Parkome"
@@ -109,8 +108,7 @@ CohortData <- lapply(CohortData, function(Cohort){
     temp
   }, simplify = FALSE) %>% rbindlist() %>% data.frame()
   
-  TopFiveProportionNoMT <- merge(TopFiveProportionNoMT, geneNames, by.x = "ensemblID", by.y = "ensembl_gene_id", all.x = T, all.y = F)
-  
+
   TopFiveSum <- TopFiveProportionNoMT %>% group_by(Filename) %>%
     summarise(TotProp = sum(Proportion)) %>%
     data.frame %>% arrange(TotProp)
@@ -138,7 +136,7 @@ CohortData <- lapply(CohortData, function(Cohort){
                       name = "GeneID (n)") +
     geom_bar(stat = "identity")
   print(Plot)  
-  
+  browser()
   #Get the top expressed genes in each sample and the sum of their counts
   TopGenes <- sapply(grep("_", names(MitoCountFiltered), value = T), function(smpl){
     TopFive <- MitoCountFiltered %>% arrange_(.dots = smpl) %>% tail(5)
@@ -211,7 +209,6 @@ studyFinal <- lapply(CohortData, function(Cohort) {
   Metadata$PMI_hours <- as.numeric(Metadata$pm_time_min)/60
   Metadata$Batch <- factor(Metadata$Batch)
   aned = Cohort$aned
-  RunComBat = FALSE
   source(paste0(GenScriptPath, "pre-proccessRNAseq.R"), local=T)
   output <- list(aned_high, aned_good, aned_low, MaxNoise,
                  exclude_samples_low, exclude_samples_high, exclude_samples, Metadata_org, Metadata)
@@ -353,10 +350,6 @@ save.image(paste0(GeneralResultsPath, name, ".RData"))
 save(studyFinal, file = paste0(GeneralResultsPath, "studyFinal", name, ".rda"))
 save(PCA_results, file = paste0(GeneralResultsPath, "PCAresults", name, ".Rda"))
 
-ggplot(studyFinal$NBB$Metadata, aes(Profile,Microglia_Genes)) +
-  theme_classic() +
-  geom_boxplot() +
-  geom_jitter(width = 0.2)
 
 #Run DE analysis
 source(paste0(ProjScriptPath, "DESeqAnalysis.R"))
